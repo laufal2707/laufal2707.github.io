@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prepare Your Future! - Interactive Job Simulator</title>
+  <link rel="stylesheet" href="styles_Version8_en.css">
+</head>
+<body>
+  <header>
+    <div class="header-icon">
+      <!-- SVG fixed -->
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="10" fill="#fff"/>
+        <path d="M8 17v-2a4 4 0 0 1 8 0v2" stroke="#22356F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="12" cy="10" r="3" stroke="#22356F" stroke-width="2"/>
+      </svg>
+    </div>
+    <h1>Prepare Your Future!</h1>
+    <p>Simulate a real interview and apply to your first job with interactive activities.</p>
+  </header>
+  <main>
+    <section id="dialogo-section">
+      <h2>1. Job Interview Simulation</h2>
+      <p class="section-desc">Drag and order Lourdes’s answers to correctly recreate the job interview dialogue.</p>
+      <div id="dialogos" class="dialogos"></div>
+      <div class="buttons-row">
+        <button id="comprobar">Check Order</button>
+        <button id="reiniciar">Reset</button>
+      </div>
+      <div id="resultado"></div>
+    </section>
+    <hr>
+    <section id="imagen-section">
+      <h2>2. Apply to the Job Offer!</h2>
+      <p class="section-desc">Complete the job offer information by dragging the correct words into the blanks.</p>
+      <img src="https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=600&q=80" alt="Job offer image" class="job-img">
+      <div id="fill-blanks-text" class="fill-blanks-text"></div>
+      <div id="words-bank" class="words-bank"></div>
+      <div class="buttons-row">
+        <button id="comprobar-blanks">Check Answers</button>
+        <button id="reiniciar-blanks">Reset</button>
+      </div>
+      <div id="feedback-blanks"></div>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 - Job Interview and Application Simulator</p>
+  </footer>
+  <div id="congrats-modal" class="modal-congrats">
+    <div class="modal-content">
+      <span id="close-modal" class="close-btn">&times;</span>
+      <h2>Congratulations, you won!</h2>
+      <p>A kiss from <b>CABRI</b> 😘</p>
+    </div>
+  </div>
+  <script src="script_Version11_en.js"></script>
+</body>
+</html>
