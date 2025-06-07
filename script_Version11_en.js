@@ -4,35 +4,35 @@ const dialogosCorrectos = [
     id: 1,
     texto: `
 <strong>Interviewer:</strong> Good morning, Lourdes. Thank you for coming today. Could you tell us a bit about yourself and why you are interested in this position?<br><br>
-<strong>Lourdes:</strong> Good morning, and thank you for the opportunity. I am an advanced student in the Mathematics Teaching Program at CFE, and I also have a background in engineering. I am passionate about education and eager to apply my knowledge while continuing to learn in this field.
+<strong>Lourdes:</strong> Good morning, and thank you for the opportunity. I am an advanced student in the Mathematics Teaching Program at CFE, and I also have a background in engineering. I am passio[...]
 `
   },
   {
     id: 2,
     texto: `
 <strong>Interviewer:</strong> What experience do you have working with teenagers?<br><br>
-<strong>Lourdes:</strong> I have given private math lessons to high school students from 1st to 6th year, which allowed me to understand different learning styles. I also participated in a school support program in my community.
+<strong>Lourdes:</strong> I have given private math lessons to high school students from 1st to 6th year, which allowed me to understand different learning styles. I also participated in a school supp[...]
 `
   },
   {
     id: 3,
     texto: `
 <strong>Interviewer:</strong> This role includes supporting the lead teacher and helping with lesson planning. How do you feel about teamwork?<br><br>
-<strong>Lourdes:</strong> I really enjoy working in teams. I believe we grow a lot through collaboration. I am used to sharing ideas, receiving feedback, and adapting activities to meet students' needs.
+<strong>Lourdes:</strong> I really enjoy working in teams. I believe we grow a lot through collaboration. I am used to sharing ideas, receiving feedback, and adapting activities to meet students' need[...]
 `
   },
   {
     id: 4,
     texto: `
 <strong>Interviewer:</strong> What would you do if a student feels frustrated because they don’t understand a math problem?<br><br>
-<strong>Lourdes:</strong> I would first help the student calm down and remind them that making mistakes is part of learning. Then, I would try a different approach—maybe using visuals, games, or real-life examples to help them understand.
+<strong>Lourdes:</strong> I would first help the student calm down and remind them that making mistakes is part of learning. Then, I would try a different approach—maybe using visuals, games, or rea[...]
 `
   },
   {
     id: 5,
     texto: `
 <strong>Interviewer:</strong> Finally, what do you hope to gain from this experience?<br><br>
-<strong>Lourdes:</strong> I hope to grow as a professional, gain real classroom experience, and improve my teaching strategies. I am also excited to learn from experienced teachers and get to know the students.
+<strong>Lourdes:</strong> I hope to grow as a professional, gain real classroom experience, and improve my teaching strategies. I am also excited to learn from experienced teachers and get to know the[...]
 `
   }
 ];
@@ -61,11 +61,13 @@ function renderizarDialogos() {
   agregarDragAndDrop();
 }
 
+// DRAG & DROP con soporte mouse y touch
 function agregarDragAndDrop() {
   const bloques = document.querySelectorAll('.bloque');
   let bloqueArrastrado = null;
 
   bloques.forEach(bloque => {
+    // Mouse events
     bloque.addEventListener('dragstart', (e) => {
       bloqueArrastrado = bloque;
       bloque.classList.add('dragging');
@@ -106,6 +108,44 @@ function agregarDragAndDrop() {
       }
       bloque.classList.remove('over');
     });
+
+    // Touch events
+    let touchStartY = null;
+    let touchStartX = null;
+    bloque.addEventListener('touchstart', (e) => {
+      if (e.touches.length !== 1) return;
+      touchStartY = e.touches[0].clientY;
+      touchStartX = e.touches[0].clientX;
+      bloqueArrastrado = bloque;
+      bloque.classList.add('dragging');
+      e.stopPropagation();
+    }, {passive: false});
+
+    bloque.addEventListener('touchmove', (e) => {
+      if (!bloqueArrastrado) return;
+      const touch = e.touches[0];
+      const target = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (target && target.classList.contains('bloque') && target !== bloqueArrastrado) {
+        const contenedor = document.getElementById('dialogos');
+        let bloquesActuales = Array.from(contenedor.children);
+        let arrastradoIdx = bloquesActuales.indexOf(bloqueArrastrado);
+        let objetivoIdx = bloquesActuales.indexOf(target);
+        if (arrastradoIdx < objetivoIdx) {
+          contenedor.insertBefore(bloqueArrastrado, target.nextSibling);
+        } else {
+          contenedor.insertBefore(bloqueArrastrado, target);
+        }
+      }
+      e.preventDefault();
+    }, {passive: false});
+
+    bloque.addEventListener('touchend', (e) => {
+      if (!bloqueArrastrado) return;
+      bloque.classList.remove('dragging');
+      bloqueArrastrado = null;
+      bloques.forEach(b => b.classList.remove('over'));
+      e.preventDefault();
+    }, {passive: false});
   });
 }
 
@@ -196,10 +236,12 @@ function renderizarFillBlanks() {
   document.getElementById('feedback-blanks').textContent = '';
 }
 
+// DRAG & DROP para blanks, con soporte touch
 function agregarDragAndDropBlanks() {
   let palabraArrastrada = null;
 
   document.querySelectorAll('.word').forEach(word => {
+    // Mouse
     word.addEventListener('dragstart', (e) => {
       palabraArrastrada = word;
       word.classList.add('dragging');
@@ -208,8 +250,23 @@ function agregarDragAndDropBlanks() {
       palabraArrastrada = null;
       word.classList.remove('dragging');
     });
+
+    // Touch
+    word.addEventListener('touchstart', (e) => {
+      if (e.touches.length !== 1) return;
+      palabraArrastrada = word;
+      word.classList.add('dragging');
+      e.stopPropagation();
+    }, {passive: false});
+    word.addEventListener('touchend', (e) => {
+      palabraArrastrada = null;
+      word.classList.remove('dragging');
+      e.preventDefault();
+    }, {passive: false});
   });
+
   document.querySelectorAll('.blank').forEach(blank => {
+    // Mouse
     blank.addEventListener('dragover', (e) => {
       e.preventDefault();
     });
@@ -222,7 +279,6 @@ function agregarDragAndDropBlanks() {
     blank.addEventListener('drop', (e) => {
       e.preventDefault();
       if (palabraArrastrada) {
-        // Return previous word to bank if there was one
         let previousText = blank.textContent;
         if (previousText && previousText.trim() !== "") {
           document.querySelectorAll('.word').forEach(word => {
@@ -236,7 +292,28 @@ function agregarDragAndDropBlanks() {
       }
       blank.classList.remove('over');
     });
-    // Allow double-click to clear the blank and return word to bank
+
+    // Touch (simula soltar palabra en blank)
+    blank.addEventListener('touchmove', (e) => {
+      if (palabraArrastrada) {
+        let previousText = blank.textContent;
+        if (previousText && previousText.trim() !== "") {
+          document.querySelectorAll('.word').forEach(word => {
+            if (word.textContent === previousText) word.style.visibility = 'visible';
+          });
+        }
+        blank.textContent = palabraArrastrada.textContent;
+        blank.classList.add('filled');
+        blank.classList.remove('incorrect');
+        palabraArrastrada.style.visibility = 'hidden';
+        palabraArrastrada.classList.remove('dragging');
+        palabraArrastrada = null;
+      }
+      blank.classList.remove('over');
+      e.preventDefault();
+    }, {passive: false});
+
+    // Doble click para limpiar
     blank.addEventListener('dblclick', (e) => {
       let text = blank.textContent;
       document.querySelectorAll('.word').forEach(word => {
